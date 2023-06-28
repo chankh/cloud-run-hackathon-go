@@ -64,13 +64,41 @@ func play(input ArenaUpdate) (response string) {
 		arenaMap[y][x] = k
 	}
 
+	commands := []string{"R", "L"}
+	rand := rand2.Intn(2)
+	action := commands[rand]
+
 	if isSomeoneInFront(myState, arenaMap, width, height) {
-		return "T"
+		action = "T"
 	}
 
-	commands := []string{"F", "R", "L"}
-	rand := rand2.Intn(3)
-	return commands[rand]
+	if !isFacingWall(myState, width, height) {
+		action = "F"
+	}
+
+	log.Printf("action: %s", action)
+	return action
+}
+
+func isFacingWall(state PlayerState, width int, height int) bool {
+	d := state.Direction
+	x := state.X
+	y := state.Y
+
+	if d == "N" && y == 0 {
+		return true
+	}
+	if d == "W" && x == 0 {
+		return true
+	}
+	if d == "S" && y == height-1 {
+		return true
+	}
+	if d == "E" && x == width-1 {
+		return true
+	}
+
+	return false
 }
 
 func isSomeoneInFront(state PlayerState, arena [][]string, width int, height int) bool {
