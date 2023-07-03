@@ -9,6 +9,8 @@ import (
 	"os"
 )
 
+var lastAction string
+
 func main() {
 	port := "8080"
 	if v := os.Getenv("PORT"); v != "" {
@@ -64,9 +66,13 @@ func play(input ArenaUpdate) (response string) {
 		arenaMap[y][x] = k
 	}
 
-	commands := []string{"R", "L"}
-	rand := rand2.Intn(2)
-	action := commands[rand]
+	log.Printf("last action: %s", lastAction)
+	action := lastAction
+	if action != "R" && action != "L" {
+		commands := []string{"R", "L"}
+		rand := rand2.Intn(2)
+		action = commands[rand]
+	}
 
 	if isSomeoneInFront(myState, arenaMap, width, height) {
 		action = "T"
@@ -77,6 +83,7 @@ func play(input ArenaUpdate) (response string) {
 	}
 
 	log.Printf("action: %s", action)
+	lastAction = action
 	return action
 }
 
